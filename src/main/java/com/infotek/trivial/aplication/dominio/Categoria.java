@@ -3,9 +3,20 @@ package com.infotek.trivial.aplication.dominio;
 public class Categoria {
 
     private String category;
-    private String description;
+    private String description;    
+    
+    public Categoria() {
+		super();
+	}
+    
+	public Categoria(String category, String description) {
+		super();
+		this.category = category;
+		this.description = description;
+	}
 
-    public String getCategory() {
+
+	public String getCategory() {
         return category;
     }
 

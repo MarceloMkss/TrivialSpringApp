@@ -1,5 +1,8 @@
 package com.infotek.trivial.aplication.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,7 @@ import com.infotek.trivial.aplication.service.TrivialService;
 @RestController
 @RequestMapping("/trivia")
 public class TriviaController {
+	
 
 	private final TrivialService trivialService;
 
@@ -46,19 +50,17 @@ public class TriviaController {
 	}
 
 	@GetMapping("/categories")
-	public Categoria[] getCategories() {
-
-		Categoria cat = new Categoria();
-		cat.setCategory("Arte");
-		cat.setDescription("Preguntas relacionadas con arte, literatura, música y otras expresiones culturales.");
-
-		Categoria cat2 = new Categoria();
-		cat2.setCategory("Deportes");
-		cat2.setDescription("Preguntas relacionadas con diversos deportes y eventos deportivos.");
-
-		Categoria[] categorias = new Categoria[2];
-		categorias[0] = cat;
-		categorias[1] = cat2;
-		return categorias;
+	public List<Categoria> getCategories() {
+		
+		List<Categoria> listaCategorias = new ArrayList<>();
+		
+		listaCategorias.add(new Categoria("Historia", "Preguntas relacionadas con la Historia."));
+		listaCategorias.add(new Categoria("Ciencia", "Preguntas relacionadas con la Ciencia."));
+		listaCategorias.add(new Categoria("Cultura", "Preguntas relacionadas con la Cultura."));
+		listaCategorias.add(new Categoria("Deportes", "Preguntas relacionadas con el Deportes."));
+		listaCategorias.add(new Categoria("Arte", "Preguntas relacionadas con el Arte."));
+		listaCategorias.add(new Categoria("Cine", "Preguntas relacionadas con el Cine."));
+		
+		return listaCategorias;
 	}
 }
