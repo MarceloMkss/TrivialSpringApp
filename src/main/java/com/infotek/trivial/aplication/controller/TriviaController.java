@@ -61,16 +61,16 @@ public class TriviaController {
 		// aqui uso la data.sql
 		var listaPreguntas = preguntasRepo.findAll();
 		
+		
 		return listaPreguntas;	
 		
 	}
 
 	@GetMapping("/questions/{categoria}")
-	public Optional<Pregunta> getTriviaQuestions(@PathVariable String categoria){
+	public Pregunta getTriviaQuestions(@PathVariable String categoria){		
 		
-		var listaPreguntas = preguntasRepo.findById(1L);
-		// aqui utilizo la api de the-trivia-api.com
-			return listaPreguntas;
+		// utilizando data.sql		
+		return preguntasRepo.findByCategory(categoria);
 	}
 
 	@GetMapping("/categories")
