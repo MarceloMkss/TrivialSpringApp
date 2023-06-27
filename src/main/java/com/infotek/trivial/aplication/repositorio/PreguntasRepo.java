@@ -9,6 +9,6 @@ import com.infotek.trivial.aplication.dominio.Pregunta;
 
 @Repository
 public interface PreguntasRepo extends CrudRepository<Pregunta, Long> {
-
+	
 	List<Pregunta> findAll();
 }
