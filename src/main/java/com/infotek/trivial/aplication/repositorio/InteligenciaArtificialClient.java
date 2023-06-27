@@ -1,7 +1,6 @@
 package com.infotek.trivial.aplication.repositorio;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,55 +8,39 @@ import java.net.URL;
 public class InteligenciaArtificialClient {
 	
     public String enviarPregunta(String pregunta) {
-        String respuestaDeChatGpt = "";
-        try {
-            // URL de la API de ChatGPT
-            URL url = new URL("https://api.openai.com/v1/chat/completions");
+    	 String triviaQuestionsJson = "";
 
-            // Establecer la conexión HTTP
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+         try {
+             // URL de la API
+             String apiUrl = "https://the-trivia-api.com/v2/questions?category=" + pregunta;
 
-            // Establecer los encabezados de la solicitud
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer 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");
+             // Establecer la conexión
+             URL url = new URL(apiUrl);
+             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+             connection.setRequestMethod("GET");
 
-            connection.setDoOutput(true);
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+             // Obtener la respuesta
+             int responseCode = connection.getResponseCode();
+             if (responseCode == HttpURLConnection.HTTP_OK) {
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                 String line;
+                 StringBuilder response = new StringBuilder();
+                 while ((line = reader.readLine()) != null) {
+                     response.append(line);
+                 }
+                 reader.close();
 
-            // Crear el cuerpo de la solicitud
-            String requestBody =
-                    "{\"model\": \"gpt-3.5-turbo\", \"messages\": [{\"role\": \"system\", \"content\": \"Dame una pregunta para un juego de trivia que contenga la siguiente estrucuta category, question, answer, explanation, options \"}, {\"role\": \"user\", \"content\": \"Who won the world series in 2020?\"}]}";
+                 // Asignar la respuesta JSON
+                 System.out.println(response.toString());
+                 triviaQuestionsJson = response.toString();
+             } else {
+                 System.out.println("Error al realizar la solicitud. Código de respuesta: " + responseCode);
+             }
+         } catch (Exception e) {
+             System.out.println("Ocurrió un error: " + e.getMessage());
+         }
 
-            // Enviar la solicitud
-            outputStream.writeBytes(requestBody);
-            outputStream.flush();
-            outputStream.close();
-
-            // Obtener la respuesta
-            int responseCode = connection.getResponseCode();
-            BufferedReader inputReader;
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                inputReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            } else {
-                inputReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-            }
-
-            // Leer la respuesta línea por línea
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = inputReader.readLine()) != null) {
-                response.append(inputLine);
-            }
-            inputReader.close();
-            // Imprimir la respuesta
-            System.out.println(response.toString());
-            respuestaDeChatGpt = response.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return respuestaDeChatGpt;
+         return triviaQuestionsJson;
     }
 	
 	
