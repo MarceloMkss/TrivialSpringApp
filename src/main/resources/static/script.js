@@ -36,11 +36,13 @@ $(document).ready(function() {
     $('#dialog #option1').prop('checked', false);
     $('#dialog #option2').prop('checked', false);
     $('#dialog #option3').prop('checked', false);
+    $('#dialog #option4').prop('checked', false);
     $('#explanation').text(question.explanation);
     $('#dialog .question').text(question.question);
     $('#dialog label[for="option1"]').text(question.options[0]);
     $('#dialog label[for="option2"]').text(question.options[1]);
     $('#dialog label[for="option3"]').text(question.options[2]);
+    $('#dialog label[for="option4"]').text(question.options[3]);
 
       $('#dialog').fadeIn();
     }, 1700);

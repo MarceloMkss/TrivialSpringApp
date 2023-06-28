@@ -1,5 +1,7 @@
 package com.infotek.trivial.aplication.dominio;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +25,7 @@ public class Pregunta {
 	private Long id;
     private String category;
     private String question;
-    private String[] options;
+    private List<String> options;
     private Integer answer;
     private String explanation;
 
