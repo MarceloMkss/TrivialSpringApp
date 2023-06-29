@@ -24,8 +24,49 @@ public class TriviaController {
 	@Autowired
 	CategoriaRepo categoriaRepo;
 
-	Pregunta pregunta = new Pregunta();
+	Pregunta pregunta;
+	
+	private TriviaController() {
+		pregunta = new Pregunta();
+	}
+	
+	/**
+	 * 
+	 * @param categoria @PathVariable: anotación usada en métodos de controladores para indicar
+	 *  que una parte de la URL de la petición	será pasada como parámetro al método.
+	 * @return la respuesta de chatGpt con la pregunta que le hago mandando un json
+	 */
+	//@GetMapping("/question/{categoria}") // llama esa url si quieres utilizar chatGpt
+	public String getQuestionByChatGpt(@PathVariable String categoria) {
+		
+		ChatGptClient chatGptClient = new ChatGptClient();
+	    
+	    String respuestaJsonChatGpt = chatGptClient.enviarPregunta("Estoy armando una trivia, necesito que me des una pregunta de la categoria" + categoria + "con la\r\n"
+	    		+ " siguiente estructura de JSON. LA respuesta de la pregunta no siempre tiene que ser la\r\n"
+	    		+ " primera, tiene que variar:\r\n"
+	    		+ "\r\n"
+	    		+ "    {\r\n"
+	    		+ "        \"category\": \"aqui va el nombre de la categoria\",\r\n"
+	    		+ "        \"question\": \"aqui va la pregunta,\r\n"
+	    		+ "        \"options\": [\r\n"
+	    		+ "        \"aca va la opcion 1\",\r\n"
+	    		+ "        \"aca va la opcion 2\",\r\n"
+	    		+ "        \"aca va la opcion 3\",\r\n"
+	    		+ "        ]\r\n"
+	    		+ "        \"answer\": \"aqui va la respuesta correcta en caso de ser la primera es el numero 0 en caso de ser la segunda es el numero 1 y en caso de                    ser la tercera es el numero 2\",\r\n"
+	    		+ "        \"explanation\": \"aqui tienes que poner una explicacion de la respuesta correcta\",\r\n"
+	    		+ "    }"); 
+	 
+	    return respuestaJsonChatGpt;
+		
+	}
 
+	/**
+	 * 
+	 * @param categoria @PathVariable: anotación usada en métodos de controladores para indicar
+	 *  que una parte de la URL de la petición	será pasada como parámetro al método.
+	 * @return una Pregunta por su Categoria. datos metidos a Mano
+	 */
 	@GetMapping("/question/{categoria}")
 	public Pregunta getQuestion(@PathVariable String categoria) {
 
@@ -128,35 +169,41 @@ public class TriviaController {
 
 	}
 
+	
+	/**
+	 * 
+	 * @return una lista de preguntas por un motor de bases de datos SQL
+	 *  que implementa la API de JDBC, o sea tengo una tabla portable.
+	 */
 	@GetMapping("/questions")
 	public List<Pregunta> getQuestions() {
-
-		// aqui uso la data.sql
-		var listaPreguntas = preguntasRepo.findAll();
-
-		return listaPreguntas;
+		
+		return preguntasRepo.findAll();
 
 	}
 
+	/**
+	 * 
+	 * @param categoria @PathVariable anotación usada en métodos de controladores para indicar
+	 *  que una parte de la URL de la petición	será pasada como parámetro al método.
+	 * 
+	 * @return una Pregunta por su categoria. utilizando un motor de bases de datos SQL y
+	 *  que implementa la API de JDBC.
+	 */
 	@GetMapping("/questions/{categoria}")
 	public Pregunta getTriviaQuestions(@PathVariable String categoria) {
 
-		// utilizando data.sql
 		return preguntasRepo.findByCategory(categoria);
 	}
 
+	/**
+	 * 
+	 * @return una lista de categorias por un motor de bases de datos SQL y
+	 *  que implementa la API de JDBC, o sea tengo una tabla portable.
+	 */
 	@GetMapping("/categories")
 	public List<Categoria> getCategories() {
 
-		List<Categoria> listaCategorias = new ArrayList<>();
-
-		listaCategorias.add(new Categoria(1L, "Historia", "Preguntas relacionadas con la Historia."));
-		listaCategorias.add(new Categoria(2l, "Ciencia", "Preguntas relacionadas con la Ciencia."));
-		listaCategorias.add(new Categoria(3L, "Cultura", "Preguntas relacionadas con la Cultura."));
-		listaCategorias.add(new Categoria(4L, "Deportes", "Preguntas relacionadas con el Deportes."));
-		listaCategorias.add(new Categoria(5L, "Arte", "Preguntas relacionadas con el Arte."));
-		listaCategorias.add(new Categoria(6L, "Cine", "Preguntas relacionadas con el Cine."));
-
-		return listaCategorias;
+		return categoriaRepo.findAll();
 	}
 }
