@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infotek.trivial.aplication.dominio.Categoria;
 import com.infotek.trivial.aplication.dominio.Pregunta;
 import com.infotek.trivial.aplication.repositorio.CategoriaRepo;
-import com.infotek.trivial.aplication.repositorio.ChatGptClient;
 import com.infotek.trivial.aplication.repositorio.PreguntasRepo;
+import com.infotek.trivial.aplication.service.ChatGptClient;
 
 @RestController
 @RequestMapping("/trivia")
@@ -42,7 +42,7 @@ public class TriviaController {
 		
 		ChatGptClient chatGptClient = new ChatGptClient();
 	    
-	    String respuestaJsonChatGpt = chatGptClient.enviarPregunta("Estoy armando una trivia, necesito que me des una pregunta de la categoria" + categoria + "con la\r\n"
+	    return chatGptClient.enviarPreguntaChatGpt("Estoy armando una trivia, necesito que me des una pregunta de la categoria" + categoria + "con la\r\n"
 	    		+ " siguiente estructura de JSON. LA respuesta de la pregunta no siempre tiene que ser la\r\n"
 	    		+ " primera, tiene que variar:\r\n"
 	    		+ "\r\n"
@@ -56,12 +56,19 @@ public class TriviaController {
 	    		+ "        ]\r\n"
 	    		+ "        \"answer\": \"aqui va la respuesta correcta en caso de ser la primera es el numero 0 en caso de ser la segunda es el numero 1 y en caso de                    ser la tercera es el numero 2\",\r\n"
 	    		+ "        \"explanation\": \"aqui tienes que poner una explicacion de la respuesta correcta\",\r\n"
-	    		+ "    }"); 
-	 
-	    return respuestaJsonChatGpt;
+	    		+ "    }");
 		
 	}
 
+	
+	//@GetMapping("/question/{categoria}")
+	public List<Pregunta> getQuestion(@PathVariable String categoria) {	
+		
+	    var preguntas = preguntasRepo.findByCategory(categoria);	    
+
+	    return preguntas;
+	}
+	
 	/**
 	 * 
 	 * @param categoria @PathVariable: anotación usada en métodos de controladores para indicar
@@ -69,7 +76,7 @@ public class TriviaController {
 	 * @return una Pregunta por su Categoria. datos metidos a Mano
 	 */
 	@GetMapping("/question/{categoria}")
-	public Pregunta getQuestion(@PathVariable String categoria) {
+	public Pregunta getQuestion1(@PathVariable String categoria) {
 
 		// Sin Stram modo tradicional datos a mano de momento
 		List<String> options = new ArrayList<>();
@@ -193,8 +200,13 @@ public class TriviaController {
 	 */
 	@GetMapping("/questions/{categoria}")
 	public Pregunta getTriviaQuestions(@PathVariable String categoria) {
+		
+		return preguntasRepo.findAll().stream()
+	            .filter(preg -> preg.getCategory().equals(categoria))
+	            .findFirst()
+	            .orElse(null);
 
-		return preguntasRepo.findByCategory(categoria);
+		//return preguntasRepo.findByCategory(categoria);
 	}
 
 	/**

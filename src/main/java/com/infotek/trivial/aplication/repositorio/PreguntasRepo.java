@@ -11,5 +11,5 @@ import com.infotek.trivial.aplication.dominio.Pregunta;
 public interface PreguntasRepo extends CrudRepository<Pregunta, Long> {
 
 	List<Pregunta> findAll();
-	Pregunta findByCategory(String categoria);
+	List<Pregunta> findByCategory(String categoria);
 }
