@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.infotek.trivial.aplication.dominio.Categoria;
 import com.infotek.trivial.aplication.dominio.Pregunta;
 import com.infotek.trivial.aplication.repositorio.CategoriaRepo;
+import com.infotek.trivial.aplication.repositorio.ChatGptClient;
 import com.infotek.trivial.aplication.repositorio.PreguntasRepo;
 
 @RestController
