@@ -96,6 +96,7 @@ async function load() {
   || $('#txtUrlCategories').val().includes('localhost')) {
     allowOrigin = '';
   }
+  
   let urlQuestion = allowOrigin + $('#txtUrlQuestion').val();
   let urlCategories = allowOrigin + $('#txtUrlCategories').val();
 
@@ -105,7 +106,11 @@ async function load() {
   response = await fetch(urlCategories);
   categories = await response.json();
 
-  for (var i = 0; i < categories.length; i++) {
-    $('.wheel .section').find('span').eq(i).html(categories[i].category);
-  }
+  let wheel = $('#wheel');
+  wheel.empty();  // limpiar el contenido existente
+  categories.forEach((category) => {
+    wheel.append(`<div class="section"><span>${category.category}</span></div>`);
+  });
 }
+
+
