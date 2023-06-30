@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.infotek.trivial.aplication.dominio.Categoria;
 import com.infotek.trivial.aplication.dominio.Pregunta;
+import com.infotek.trivial.aplication.exceptions.CategoriaNotFoundException;
 import com.infotek.trivial.aplication.repositorio.CategoriaRepo;
 import com.infotek.trivial.aplication.repositorio.PreguntasRepo;
 import com.infotek.trivial.aplication.service.ChatGptClient;
+import com.infotek.trivial.aplication.utilidades.Constantes;
 
 @RestController
 @RequestMapping("/trivia")
@@ -197,22 +201,32 @@ public class TriviaController {
 	 * 
 	 * @return una Pregunta por su categoria. utilizando un motor de bases de datos SQL y
 	 *  que implementa la API de JDBC.
+	 *  findFirst(): obtiene la primera pregunta que coincida con la categoría especificada.
 	 */
+	
 	@GetMapping("/questions/{categoria}")
-	public Pregunta getTriviaQuestions(@PathVariable String categoria) {
-		
-		return preguntasRepo.findAll().stream()
-	            .filter(preg -> preg.getCategory().equals(categoria))
-	            .findFirst()
-	            .orElse(null);
+	public ResponseEntity<?> getTriviaQuestions(@PathVariable String categoria) {
+	    
+	    try {
+	    	
+	       pregunta = preguntasRepo.findAll().stream()
+	                .filter(preg -> preg.getCategory().equalsIgnoreCase(categoria))
+	                .findFirst()
+	                .orElseThrow(() -> new CategoriaNotFoundException(Constantes.mensajeError));
 
-		//return preguntasRepo.findByCategory(categoria);
+	        return ResponseEntity.ok(pregunta);
+	        
+	    } catch (CategoriaNotFoundException e) {
+	    	
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	        
+	    }
 	}
-
+	
 	/**
 	 * 
 	 * @return una lista de categorias por un motor de bases de datos SQL y
-	 *  que implementa la API de JDBC, o sea tengo una tabla portable.
+	 *  que implementa la API de JDBC.
 	 */
 	@GetMapping("/categories")
 	public List<Categoria> getCategories() {
